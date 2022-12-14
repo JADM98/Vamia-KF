@@ -44,7 +44,7 @@ class KalmanFilter():
         self.processCovMatrix = np.dot(np.dot(self.transitionMatrix, self.processCovMatrix), self.transitionMatrix.T) + self.Q
         return tuple([float(var) for var in np.dot(self.observationMatrix, self.stateVector)])
 
-    def update(self, z:list[int]|Tuple[int]|np.ndarray|float):
+    def update(self, z:list[int]|Tuple[int]|np.ndarray|float) -> Tuple[float, ...]:
         isIstance, z = self.__checkDataInstace(z)
         if isIstance:
             y = z - np.dot(self.observationMatrix, self.stateVector)
@@ -53,6 +53,7 @@ class KalmanFilter():
             self.stateVector = self.stateVector + np.dot(K, y)
             I = np.eye( self.numberOfVariables* (1+self.includeVelocity) )
             self.processCovMatrix = np.dot(I - np.dot(K, self.observationMatrix), self.processCovMatrix)
+            return tuple([float(var) for var in np.dot(self.observationMatrix, self.stateVector)])
 
     def __checkDataInstace(self, myData):
         if isinstance(myData, int) or isinstance(myData, float):
